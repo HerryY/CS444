@@ -1,3 +1,4 @@
+\linespread{1}
 \documentclass[letterpaper,
 10pt, titlepage, draftclsnofoot, onecolumn]{IEEEtran}
 
@@ -46,8 +47,11 @@
 \usepackage{titling}
 \usepackage{listings}
 
-\title{CS444: Project 1}
+\title{CS444: Project 1\\
+        \large Spring 2016}
 \author{Spike Madden}
+
+
 
 \begin{document}
 \begin{titlingpage}
@@ -82,6 +86,8 @@ A log of commands.
 \end{enumerate}
 
 \section*{Qemu Command Line}
+
+Command line definitions were found with the help of the QEMU Emulator User Documentation. \cite{QEMU}
 
 \subsection*{-gdb dev}
 Wait for gdb connection on device dev. In my case, dev is tcp::5585.
@@ -124,7 +130,7 @@ This assignment tested our ability to implement the consumer producer problem us
 
 \subsection*{How did you personally approach the problem?}
 
-I've never used pthreads before this because I took 344 with Professor Brewster. I checked out code examples and the manpages on the functionality of pthreads. I read up on mutex variables and conditional variables. I wrote some pseudocode that divided up the labor between a consumer and producer function. An array of structs seemed like an appropriate data structure to hold the information needed for this assignment.
+I've never used pthreads before this because I took 344 with Professor Brewster. I checked out code examples \cite{stack} and the manpages on the functionality of pthreads. I read up on mutex variables and conditional variables. I wrote some pseudocode that divided up the labor between a consumer and producer function. An array of structs seemed like an appropriate data structure to hold the information needed for this assignment.
 
 \subsection*{How did you ensure your solution was correct?}
 
@@ -134,8 +140,20 @@ I got the program working for the general cases where the producer and consumer 
 
 I learned how to use pthreads to implement the consumer producer problem. Within pthreads, I learned about mutex and conditional variables that helped control access of the shared resources within the program. More generally, it helped introduce me to the idea of programming in parallel.
 
-
-
+\section*{Version Control Log}
+\begin{tabular}{|c c c c |}
+\hline
+date & additions & deletions & message\\
+\hline
+04.06.2016 & 2 & 0 & Initial commit\\
+\hline
+04.11.2016 & 6796 & 0 & almost done\\
+\hline
+04.11.2016 & 133 & 0 & updated c file\\
+\hline
+04.11.2016 & 146 & 1 & updated latex file, still need commit table\\
+\hline
+\end{tabular}
 
 \section*{Work Log}
 \subsection*{04.02.2016 -- 3 hours}
@@ -289,5 +307,7 @@ int main()
 
 \end{lstlisting}
 
+\bibliographystyle{IEEEtran}
+\bibliography{template}
 
 \end{document}

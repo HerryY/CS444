@@ -5,12 +5,18 @@ DVIPDF  = dvipdft
 XDVI	= xdvi -gamma 4
 GH		= gv
 
-all: writeup
+all: writeup code
 
 writeup:
 	latex template.tex
+	bibtex template
+	latex template.tex
+	latex template.tex
 	dvips -R -Poutline -t letter template.dvi -o template.ps
 	ps2pdf template.ps
+
+code:
+	gcc -pthread consumer_producer.c -o assignment1
 
 clean:
 	rm -f *.pdf *.ps *.dvi *.out *.log *.aux *.bbl *.blg *.pyg
