@@ -1,0 +1,148 @@
+\documentclass[letterpaper,
+10pt, titlepage, draftclsnofoot, onecolumn]{IEEEtran}
+
+\usepackage{graphicx}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+
+\usepackage{alltt}
+\usepackage{float}
+\usepackage{color}
+\usepackage{url}
+
+\usepackage{balance}
+\usepackage[TABBOTCAP, tight]{subfigure}
+\usepackage{enumitem}
+\usepackage{pstricks, pst-node}
+
+\usepackage{geometry}
+\geometry{textheight=8.5in, textwidth=6in}
+
+%random comment
+
+\newcommand{\cred}[1]{{\color{red}#1}}
+\newcommand{\cblue}[1]{{\color{blue}#1}}
+
+\usepackage{hyperref}
+\usepackage{geometry}
+
+\def\name{Spike Madden}
+
+%pull in the necessary preamble matter for pygments output
+\input{pygments.tex}
+
+%% The following metadata will show up in the PDF properties
+\hypersetup{
+  colorlinks = true,
+  urlcolor = black,
+  pdfauthor = {\name},
+  pdfkeywords = {cs344 ``operating systems'' consumer-producer},
+  pdftitle = {CS 344 Project 1: Kernel and Consumer-Producer Problem},
+  pdfsubject = {CS 344 Project 1},
+  pdfpagemode = UseNone
+}
+
+\usepackage{titling}
+
+\title{CS444: Project 1}
+\author{Spike Madden}
+
+\begin{document}
+\begin{titlingpage}
+	\maketitle
+	\begin{abstract}
+		This document contains information about the kernel building and the concurrency exercise outlined in Homework 1. It contains a log of instructions to build the kernel, a write up to the concurrency exercise with follow up questions, an explanation of the qemu flags, a version control log and a work log.
+
+	\end{abstract}
+\end{titlingpage}
+
+\section*{Building The Kernel}
+
+A log of commands.
+
+\begin{enumerate}
+\item cd /scratch/spring2016
+\item mkdir cs444-085
+\item cd cs444-085
+\item git clone git://git.yoctoproject.org/linux-yocto-3.14
+\item git checkout v3.14.26
+\item source /scratch/opt/environment-setup-i586-poky-linux.csh
+\item cp /scratch/spring2016/files/config-3.14.26-yocto-qemu .config
+\item cp /scratch/spring2016/files/bzImage-qemux86.bin .
+\item cp /scratch/spring2016/files/core-image-lsb-sdk-qemux86.ext3 .
+\item make -j4 all
+\item qemu-system-i386 -gdb tcp::5585 -S -nographic -kernel bzImage-qemux86.bin -drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio -enable-kvm -net none -usb -localtime --no-reboot --append "root=/dev/vda rw console=ttyS0 debug"
+\item gdb
+\item target remote :5585
+\item continue
+\end{enumerate}
+
+\section*{Qemu Command Line}
+
+\subsection*{-gdb dev}
+Wait for gdb connection on device dev. In my case, dev is tcp::5585.
+
+\subsection*{-S}
+Do not start CPU at startup.
+
+\subsection*{-nographic}
+Disable the graphical output so that qemu is a simple command line application.
+
+\subsection*{-kernel bzImage-qemux86.bin}
+Use bzImage as the kernel image where the bzImage is bzImage-qemux86.bin.
+
+\subsection*{-drive file=core-image-lsb-sdk-qemux86.ext3,if=virtio}
+Defines a new drive, where the two options used for this example are 'file=file' and 'if=interface.' The disk image to use with this drive is core-image-lsb-sk-qemux86.ext3. The interface type on which the drive is connected is of type virtio.
+
+\subsection*{-enable-kvm}
+Enables kernel-based virtual machine full virtualization support.
+
+\subsection*{-net none}
+No network devices should be configured.
+
+\subsection*{-usb}
+Enables the USB driver.
+
+\subsection*{-localtime}
+Set real time clock to local time.
+
+\subsection*{-no-reboot}
+Exit instead of rebooting.
+
+\subsection*{-append cmdline}
+Use the cmdline argument as the kernel command line. We used "root=/dev/vda rw console-ttyS0 debug."
+
+\section*{Concurrency Questions}
+
+\subsection*{What do you think the main point of this assignment is?}
+
+This assignment tested our ability to implement the consumer producer problem using pthreads. It also encouraged us to think in parallel to solve the synchronization constraints put up by the requirements.
+
+\subsection*{How did you personally approach the problem?}
+
+I've never used pthreads before this because I took 344 with Professor Brewster. I checked out code examples and the manpages on the functionality of pthreads. I read up on mutex variables and conditional variables. I wrote some pseudocode that divided up the labor between a consumer and producer function. An array of structs seemed like an appropriate data structure to hold the information needed for this assignment.
+
+\subsection*{How did you ensure your solution was correct?}
+
+I got the program working for the general cases where the producer and consumer were going back and forth writing and reading information from the array of structs. To check the interesting cases of when the producer can't produce anymore (the buffer is full) and when the consumer can't consume any more (the buffer is empty), I set the max size of the buffer to 2 instead of 32. Having such a small max buffer size created plenty of the situations described above which made testing the edge cases possible. The program successfully created random numbers using the Mersenne Twister and the wait times associated with the packages were observed to be accurate.
+
+\subsection*{What did you learn?}
+
+I learned how to use pthreads to implement the consumer producer problem. Within pthreads, I learned about mutex and conditional variables that helped control access of the shared resources within the program. More generally, it helped introduce me to the idea of programming in parallel.
+
+\section*{Work Log}
+\subsection*{04.02.2016 -- 3 hours}
+Worked on compiling the Linux kernel. Almost done, will finish next time.
+\subsection*{04.03.2016 -- 1 hour}
+Finished compiling kernel. Wrote down commands for homework question.
+\subsection*{04.09.2016 -- 2 hours}
+Started concurrency program. Reading up on pthreads, mutex and conditional variables.
+\subsection*{04.011.2016 -- 7 hours}
+Finished up concurrency program. Formatting and filling out LATEX document.
+
+
+
+
+
+\end{document}
